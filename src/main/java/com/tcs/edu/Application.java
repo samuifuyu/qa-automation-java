@@ -5,6 +5,8 @@ import com.tcs.edu.printer.ConsolePrinter;
 
 class Application {
     public static void main(String[] args) {
-        ConsolePrinter.print(TimestampMessageDecorator.decorate("kek"));
+        ConsolePrinter.print(TimestampMessageDecorator.decorate("kek1"));
+        ConsolePrinter.print(TimestampMessageDecorator.decorate("kek2"));
+        ConsolePrinter.print(TimestampMessageDecorator.decorate("kek3"));
     }
 }
