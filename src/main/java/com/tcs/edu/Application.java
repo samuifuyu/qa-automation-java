@@ -1,12 +1,36 @@
 package com.tcs.edu;
 
-import com.tcs.edu.decorator.TimestampMessageDecorator;
-import com.tcs.edu.printer.ConsolePrinter;
+import com.tcs.edu.decorator.Severity;
+
+import java.util.Random;
+
+import static com.tcs.edu.MessageService.process;
 
 class Application {
     public static void main(String[] args) {
-        ConsolePrinter.print(TimestampMessageDecorator.decorate("kek1"));
-        ConsolePrinter.print(TimestampMessageDecorator.decorate("kek2"));
-        ConsolePrinter.print(TimestampMessageDecorator.decorate("kek3"));
+
+        for (int i = 0; i < 2; i++) {
+            Severity severity = Severity.values()[new Random().nextInt(Severity.values().length)];
+            String message = "Example 1";
+
+            process(severity, message);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            Severity severity = Severity.values()[new Random().nextInt(Severity.values().length)];
+            String message = "Example 2";
+            String anotherMessage = "Additional message here";
+
+            process(severity, message, anotherMessage);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            Severity severity = Severity.values()[new Random().nextInt(Severity.values().length)];
+            String message = "Example 3";
+            String anotherMessage = "Additional message here";
+            String yetAnotherMessage = "UWU";
+
+            process(severity, message, anotherMessage, yetAnotherMessage);
+        }
     }
 }
