@@ -1,28 +1,15 @@
 package com.tcs.edu;
 
-import com.tcs.edu.decorator.Severity;
-
-import java.util.Random;
-
+import static com.tcs.edu.MessageOrder.ASC;
+import static com.tcs.edu.MessageOrder.DESC;
 import static com.tcs.edu.MessageService.process;
+import static com.tcs.edu.decorator.Severity.MAJOR;
 
 class Application {
     public static void main(String[] args) {
 
-        for (int i = 0; i < 2; i++) {
-            Severity severity = Severity.values()[new Random().nextInt(Severity.values().length)];
-            String message = "Example 1";
+        process(MAJOR, DESC, "hello", "hello 1", "hello 3", "hello 2", "hello 4", null, "hello 5");
 
-            process(severity, message);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            Severity severity = Severity.values()[new Random().nextInt(Severity.values().length)];
-            String message = "Example 2";
-            String anotherMessage = "Additional message here";
-            String nullMessage = null;
-
-            process(severity, message, anotherMessage, nullMessage);
-        }
+        process(MAJOR, ASC, "bye", "bye 3", "bye 9", "bye 5", "bye 4", null, "bye 1");
     }
 }

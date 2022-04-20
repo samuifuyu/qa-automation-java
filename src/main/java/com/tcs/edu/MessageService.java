@@ -5,16 +5,26 @@ import com.tcs.edu.decorator.Severity;
 import com.tcs.edu.decorator.TimestampMessageDecorator;
 import com.tcs.edu.printer.ConsolePrinter;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+
+import static com.tcs.edu.MessageOrder.ASC;
+import static com.tcs.edu.MessageOrder.DESC;
+
 public class MessageService {
     private static final int PAGE_SIZE = 3;
     private static final String PAGE_DIVIDER = "---";
 
     public static int messageCount = 0;
 
-    public static void process(Severity severity, String message, String... messages) {
+    public static void process(Severity severity, MessageOrder order, String message, String... messages) {
         if (message != null) printMessage(severity, message);
 
-        for (String s : messages) {
+        String[] nonNullMessages = Arrays.stream(messages).filter(Objects::nonNull).toArray(String[]::new);
+        sortMessages(order, nonNullMessages);
+
+        for (String s : nonNullMessages) {
             if (s != null) printMessage(severity, s);
         }
     }
@@ -33,7 +43,47 @@ public class MessageService {
     /**
      * Increases the value of static variable messageCount by 1
      */
-    public static void increaseCount() {
+    private static void increaseCount() {
         messageCount++;
+    }
+
+    private static void sortMessages(MessageOrder order, String... messages) {
+//        так лучше =(
+//        switch (order) {
+//            case DESC -> Arrays.sort(messages, Comparator.nullsFirst(Comparator.reverseOrder()));
+//            case ASC -> Arrays.sort(messages, Comparator.nullsFirst(Comparator.naturalOrder()));
+//        }
+
+        boolean notSorted = true;
+        switch (order) {
+            case DESC -> {
+                while (notSorted) {
+                    notSorted = false;
+                    for (int i = 1; i < messages.length; i++) {
+                        if (messages[i - 1].compareToIgnoreCase(messages[i]) < 0) {
+                            String temp = messages[i];
+                            messages[i] = messages[i - 1];
+                            messages[i - 1] = temp;
+
+                            notSorted = true;
+                        }
+                    }
+                }
+            }
+            case ASC -> {
+                while (notSorted) {
+                    notSorted = false;
+                    for (int i = 1; i < messages.length; i++) {
+                        if (messages[i - 1].compareToIgnoreCase(messages[i]) > 0) {
+                            String temp = messages[i];
+                            messages[i] = messages[i - 1];
+                            messages[i - 1] = temp;
+
+                            notSorted = true;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
