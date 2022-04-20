@@ -12,10 +12,10 @@ public class MessageService {
     public static int messageCount = 0;
 
     public static void process(Severity severity, String message, String... messages) {
-        printMessage(severity, message);
+        if (message != null) printMessage(severity, message);
 
         for (String s : messages) {
-            printMessage(severity, s);
+            if (s != null) printMessage(severity, s);
         }
     }
 

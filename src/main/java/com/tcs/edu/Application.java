@@ -20,17 +20,9 @@ class Application {
             Severity severity = Severity.values()[new Random().nextInt(Severity.values().length)];
             String message = "Example 2";
             String anotherMessage = "Additional message here";
+            String nullMessage = null;
 
-            process(severity, message, anotherMessage);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            Severity severity = Severity.values()[new Random().nextInt(Severity.values().length)];
-            String message = "Example 3";
-            String anotherMessage = "Additional message here";
-            String yetAnotherMessage = "UWU";
-
-            process(severity, message, anotherMessage, yetAnotherMessage);
+            process(severity, message, anotherMessage, nullMessage);
         }
     }
 }
