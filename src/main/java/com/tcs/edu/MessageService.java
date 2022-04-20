@@ -4,11 +4,13 @@ import com.tcs.edu.decorator.PostfixDecorator;
 import com.tcs.edu.decorator.Severity;
 import com.tcs.edu.decorator.TimestampMessageDecorator;
 import com.tcs.edu.printer.ConsolePrinter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
+import static com.tcs.edu.Doubling.DISTINCT;
 import static com.tcs.edu.MessageOrder.ASC;
 import static com.tcs.edu.MessageOrder.DESC;
 
@@ -18,14 +20,33 @@ public class MessageService {
 
     public static int messageCount = 0;
 
-    public static void process(Severity severity, MessageOrder order, String message, String... messages) {
+    public static void process(Severity severity, MessageOrder order, Doubling doubling, String message, String... messages) {
         if (message != null) printMessage(severity, message);
 
         String[] nonNullMessages = Arrays.stream(messages).filter(Objects::nonNull).toArray(String[]::new);
+
         sortMessages(order, nonNullMessages);
 
-        for (String s : nonNullMessages) {
-            if (s != null) printMessage(severity, s);
+        switch (doubling) {
+            case DISTINCT -> {
+                String[] printedMessages = new String[nonNullMessages.length];
+                for (int i = 0; i < nonNullMessages.length; i++) {
+                    boolean isUnique = true;
+                    for (int j = 0; j < i; j++) {
+                        if (Objects.equals(printedMessages[j], nonNullMessages[i])) {
+                            isUnique = false;
+                            break;
+                        }
+                    }
+                    if (isUnique) printMessage(severity, nonNullMessages[i]);
+                    printedMessages[i] = nonNullMessages[i];
+                }
+            }
+            case DOUBLES -> {
+                for (String s: nonNullMessages) {
+                    printMessage(severity, s);
+                }
+            }
         }
     }
 
@@ -47,7 +68,7 @@ public class MessageService {
         messageCount++;
     }
 
-    private static void sortMessages(MessageOrder order, String... messages) {
+    private static void sortMessages(@NotNull MessageOrder order, String... messages) {
 //        так лучше =(
 //        switch (order) {
 //            case DESC -> Arrays.sort(messages, Comparator.nullsFirst(Comparator.reverseOrder()));
