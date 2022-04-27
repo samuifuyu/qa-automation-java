@@ -1,18 +1,13 @@
 package com.tcs.edu;
 
 import com.tcs.edu.decorator.PostfixDecorator;
-import com.tcs.edu.decorator.Severity;
 import com.tcs.edu.decorator.TimestampMessageDecorator;
+import com.tcs.edu.domain.Message;
 import com.tcs.edu.printer.ConsolePrinter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Objects;
-
-import static com.tcs.edu.Doubling.DISTINCT;
-import static com.tcs.edu.MessageOrder.ASC;
-import static com.tcs.edu.MessageOrder.DESC;
 
 public class MessageService {
     private static final int PAGE_SIZE = 3;
@@ -20,41 +15,61 @@ public class MessageService {
 
     public static int messageCount = 0;
 
-    public static void process(Severity severity, MessageOrder order, Doubling doubling, String message, String... messages) {
-        if (message != null) printMessage(severity, message);
+    public static void log(Message message, Message... messages) {
+        if (message != null) printMessage(message);
 
-        String[] nonNullMessages = Arrays.stream(messages).filter(Objects::nonNull).toArray(String[]::new);
+        for (Message s : filterMessagesFromNull(messages)) {
+            printMessage(s);
+        }
+    }
+
+    public static void log(MessageOrder order, Message message, Message... messages) {
+        if (message != null) printMessage(message);
+
+        Message[] nonNullMessages = filterMessagesFromNull(messages);
+
+        sortMessages(order, nonNullMessages);
+
+        for (Message s : nonNullMessages) {
+            printMessage(s);
+        }
+    }
+
+    public static void log(MessageOrder order, Doubling doubling, Message message, Message... messages) {
+        if (message != null) printMessage(message);
+
+        Message[] nonNullMessages = filterMessagesFromNull(messages);
 
         sortMessages(order, nonNullMessages);
 
         switch (doubling) {
             case DISTINCT -> {
-                String[] printedMessages = new String[nonNullMessages.length];
+                Message[] printedMessages = new Message[nonNullMessages.length];
                 for (int i = 0; i < nonNullMessages.length; i++) {
                     boolean isUnique = true;
                     for (int j = 0; j < i; j++) {
-                        if (Objects.equals(printedMessages[j], nonNullMessages[i])) {
+                        if (printedMessages[j].equals(nonNullMessages[i])) {
                             isUnique = false;
                             break;
                         }
                     }
-                    if (isUnique) printMessage(severity, nonNullMessages[i]);
+                    if (isUnique) printMessage(nonNullMessages[i]);
                     printedMessages[i] = nonNullMessages[i];
                 }
             }
             case DOUBLES -> {
-                for (String s: nonNullMessages) {
-                    printMessage(severity, s);
+                for (Message s : nonNullMessages) {
+                    printMessage(s);
                 }
             }
         }
     }
 
-    private static void printMessage(Severity severity, String message) {
+    private static void printMessage(@NotNull Message message) {
         increaseCount();
 
-        String postfix = PostfixDecorator.getPostfixSeverity(severity);
-        String decoratedMessage = TimestampMessageDecorator.decorate(message);
+        String postfix = PostfixDecorator.getPostfixSeverity(message.getSeverity());
+        String decoratedMessage = TimestampMessageDecorator.decorate(message.getBody());
 
         ConsolePrinter.print(decoratedMessage, postfix);
 
@@ -68,7 +83,11 @@ public class MessageService {
         messageCount++;
     }
 
-    private static void sortMessages(@NotNull MessageOrder order, String... messages) {
+    private static Message @NotNull [] filterMessagesFromNull(Message... messages) {
+        return Arrays.stream(messages).filter(Objects::nonNull).toArray(Message[]::new);
+    }
+
+    private static void sortMessages(@NotNull MessageOrder order, Message... messages) {
 //        так лучше =(
 //        switch (order) {
 //            case DESC -> Arrays.sort(messages, Comparator.nullsFirst(Comparator.reverseOrder()));
@@ -81,8 +100,8 @@ public class MessageService {
                 while (notSorted) {
                     notSorted = false;
                     for (int i = 1; i < messages.length; i++) {
-                        if (messages[i - 1].compareToIgnoreCase(messages[i]) < 0) {
-                            String temp = messages[i];
+                        if (messages[i - 1].getBody().compareToIgnoreCase(messages[i].getBody()) < 0) {
+                            Message temp = messages[i];
                             messages[i] = messages[i - 1];
                             messages[i - 1] = temp;
 
@@ -95,8 +114,8 @@ public class MessageService {
                 while (notSorted) {
                     notSorted = false;
                     for (int i = 1; i < messages.length; i++) {
-                        if (messages[i - 1].compareToIgnoreCase(messages[i]) > 0) {
-                            String temp = messages[i];
+                        if (messages[i - 1].getBody().compareToIgnoreCase(messages[i].getBody()) > 0) {
+                            Message temp = messages[i];
                             messages[i] = messages[i - 1];
                             messages[i - 1] = temp;
 
