@@ -1,4 +1,4 @@
-package com.tcs.edu;
+package com.tcs.edu.service;
 
 public enum Doubling {
     DOUBLES,
