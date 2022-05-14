@@ -46,4 +46,12 @@ public class Message implements Comparable<Message> {
     public int compareTo(@NotNull Message o) {
         return body.compareTo(o.getBody());
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "body='" + body + '\'' +
+                ", severity=" + severity +
+                '}';
+    }
 }

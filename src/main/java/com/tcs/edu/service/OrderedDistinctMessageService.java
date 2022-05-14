@@ -3,11 +3,12 @@ package com.tcs.edu.service;
 import com.tcs.edu.decorator.MessageDecorator;
 import com.tcs.edu.domain.Message;
 import com.tcs.edu.printer.Printer;
+import com.tcs.edu.service.validation.ValidatedService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class OrderedDistinctMessageService implements MessageService {
+public class OrderedDistinctMessageService extends ValidatedService implements MessageService {
 
     private static final int PAGE_SIZE = 3;
     private static final String PAGE_DIVIDER = "---";
@@ -35,33 +36,46 @@ public class OrderedDistinctMessageService implements MessageService {
 
     @Override
     public void log(Message message, Message... messages) {
-        if (message != null) printMessage(message);
+        if (!super.isArgsValid(messages) || !super.isArgsValid(message)) throw new IllegalArgumentException();
 
-        Arrays.stream(filterMessagesFromNull(messages)).forEach(this::printMessage);
+//        if (message != null) printMessage(message);
+//        Arrays.stream(filterMessagesFromNull(messages)).forEach(this::printMessage);
+        printMessage(message);
+        Arrays.stream(messages).forEach(this::printMessage);
     }
 
     @Override
     public void log(MessageOrder order, Message message, Message... messages) {
-        if (message != null) printMessage(message);
+        if (!super.isArgsValid(messages) || !super.isArgsValid(order, message))
+            throw new IllegalArgumentException();
 
-        Message[] nonNullMessages = filterMessagesFromNull(messages);
-
-        sortMessages(order, nonNullMessages);
-
-        Arrays.stream(nonNullMessages).forEach(this::printMessage);
+//        if (message != null) printMessage(message);
+//        Message[] nonNullMessages = filterMessagesFromNull(messages);
+//        sortMessages(order, nonNullMessages);
+//        Arrays.stream(nonNullMessages).forEach(this::printMessage);
+        printMessage(message);
+        sortMessages(order, messages);
+        Arrays.stream(messages).forEach(this::printMessage);
     }
 
     @Override
     public void log(MessageOrder order, Doubling doubling, Message message, Message... messages) {
-        if (message != null) printMessage(message);
+        if (!super.isArgsValid(order, doubling, message) || !super.isArgsValid(messages))
+            throw new IllegalArgumentException();
 
-        Message[] nonNullMessages = filterMessagesFromNull(messages);
+//        if (message != null) printMessage(message);
+//        Message[] nonNullMessages = filterMessagesFromNull(messages);
+//        sortMessages(order, nonNullMessages);
+//        switch (doubling) {
+//            case DISTINCT -> Arrays.stream(distinct(nonNullMessages)).forEach(this::printMessage);
+//            case DOUBLES -> Arrays.stream(nonNullMessages).forEach(this::printMessage);
+//        }
 
-        sortMessages(order, nonNullMessages);
-
+        printMessage(message);
+        sortMessages(order, messages);
         switch (doubling) {
-            case DISTINCT -> Arrays.stream(distinct(nonNullMessages)).forEach(this::printMessage);
-            case DOUBLES -> Arrays.stream(nonNullMessages).forEach(this::printMessage);
+            case DISTINCT -> Arrays.stream(distinct(messages)).forEach(this::printMessage);
+            case DOUBLES -> Arrays.stream(messages).forEach(this::printMessage);
         }
     }
 
