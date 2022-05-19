@@ -15,10 +15,6 @@ public interface MessageService {
 
     void log(MessageOrder order, Doubling doubling, Message message, Message... messages);
 
-    default Message @NotNull [] filterMessagesFromNull(Message... messages) {
-        return Arrays.stream(messages).filter(Objects::nonNull).toArray(Message[]::new);
-    }
-
     default void sortMessages(@NotNull MessageOrder order, Message... messages) {
         switch (order) {
             case DESC -> Arrays.sort(messages, Comparator.nullsFirst(Comparator.reverseOrder()));

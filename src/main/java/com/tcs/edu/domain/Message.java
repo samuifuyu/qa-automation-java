@@ -49,9 +49,11 @@ public class Message implements Comparable<Message> {
 
     @Override
     public String toString() {
-        return "Message{" +
-                "body='" + body + '\'' +
-                ", severity=" + severity +
-                '}';
+        if (body != null && !body.equals(""))
+            return "Message{" +
+                    "body='" + body + '\'' +
+                    ", severity=" + severity +
+                    '}';
+        else return "";
     }
 }

@@ -17,57 +17,55 @@ import static com.tcs.edu.service.Severity.*;
 class Application {
     public static void main(String[] args) {
 
-        MessageService service  = new OrderedDistinctMessageService(
+        MessageService service = new OrderedDistinctMessageService(
                 new ConsolePrinter(),
                 new TimestampMessageDecorator(),
                 new PostfixDecorator()
         );
 
-        try {
-            service.log(
-                    null,
-                    null,
-                    new Message(""),
-                    null
-            );
-        } catch (IllegalArgumentException e) {
-            System.out.println("Illegal argument: " + e.getMessage());
-        }
+//        null argument
+        service.log(
+                null,
+                DISTINCT,
+                new Message("a")
+        );
 
-        try {
-            service.log(
-                    ASC,
-                    DISTINCT,
-                    new Message(MAJOR, "ordered distinct"),
-                    new Message(MAJOR, "b"),
-                    new Message(MINOR, "c"),
-                    new Message(REGULAR, "a"),
-                    new Message(REGULAR, "f"),
-                    new Message(REGULAR, "d"),
-                    new Message(REGULAR, "e"),
-                    new Message(REGULAR, "d"),
-                    new Message("r"),
-                    new Message(MAJOR, "d")
-            );
-        } catch (IllegalArgumentException e) {
-            System.out.println("Illegal argument: " + e.getMessage());
-        }
+//        empty argument
+        service.log(
+                ASC,
+                DISTINCT,
+                new Message("")
+        );
 
-        try {
-            service.log(
-                    DESC,
-                    new Message(MAJOR, "ordered"),
-                    new Message(MAJOR, "b"),
-                    new Message(MINOR, "c"),
-                    new Message(REGULAR, "a"),
-                    new Message(REGULAR, "d"),
-                    new Message(REGULAR, "d"),
-                    null,
-                    new Message(MAJOR, "d")
-            );
-        } catch (IllegalArgumentException e) {
-            System.out.println("Illegal argument: " + e.getMessage());
-        }
+//        ok
+        service.log(
+                ASC,
+                DISTINCT,
+                new Message(MAJOR, "ordered distinct"),
+                new Message(MAJOR, "b"),
+                new Message(MINOR, "c"),
+                new Message(REGULAR, "a"),
+                new Message(REGULAR, "f"),
+                new Message(REGULAR, "d"),
+                new Message(REGULAR, "e"),
+                new Message(REGULAR, "d"),
+                new Message("r"),
+                new Message(MAJOR, "d")
+        );
+
+//        null argument in message array
+        service.log(
+                DESC,
+                new Message(MAJOR, "ordered"),
+                new Message(MAJOR, "b"),
+                new Message(MINOR, "c"),
+                new Message(REGULAR, "a"),
+                new Message(REGULAR, "d"),
+                new Message(REGULAR, "d"),
+                null,
+                new Message(MAJOR, "d")
+        );
+
 
         Message message = new Message(MINOR, "hello");
         Message sameMessage = new Message(MINOR, "hello");
