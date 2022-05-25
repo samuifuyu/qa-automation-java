@@ -13,6 +13,8 @@ public interface MessageService {
 
     void log(MessageOrder order, Message message, Message... messages);
 
+    void log(Doubling doubling, Message message, Message... messages);
+
     void log(MessageOrder order, Doubling doubling, Message message, Message... messages);
 
     default void sortMessages(@NotNull MessageOrder order, Message... messages) {

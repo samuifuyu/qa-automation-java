@@ -4,12 +4,14 @@ import com.tcs.edu.service.Severity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.tcs.edu.service.Severity.MINOR;
 
 public class Message implements Comparable<Message> {
     private String body;
     private Severity severity;
+    private UUID id;
 
     public Message(Severity severity, String body) {
         this.body = body;
@@ -29,6 +31,14 @@ public class Message implements Comparable<Message> {
         return severity;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -39,7 +49,7 @@ public class Message implements Comparable<Message> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(body, severity);
+        return Objects.hash(body, severity, id);
     }
 
     @Override
@@ -50,7 +60,7 @@ public class Message implements Comparable<Message> {
     @Override
     public String toString() {
         if (body != null && !body.equals(""))
-            return "Message{" +
+            return id + ": Message{" +
                     "body='" + body + '\'' +
                     ", severity=" + severity +
                     '}';

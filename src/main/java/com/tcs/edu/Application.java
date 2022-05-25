@@ -3,7 +3,7 @@ package com.tcs.edu;
 import com.tcs.edu.decorator.PostfixDecorator;
 import com.tcs.edu.decorator.TimestampMessageDecorator;
 import com.tcs.edu.domain.Message;
-import com.tcs.edu.printer.ConsolePrinter;
+import com.tcs.edu.repository.HashMapMessageRepository;
 import com.tcs.edu.service.MessageService;
 import com.tcs.edu.service.OrderedDistinctMessageService;
 
@@ -17,70 +17,43 @@ import static com.tcs.edu.service.Severity.*;
 class Application {
     public static void main(String[] args) {
 
-        MessageService service = new OrderedDistinctMessageService(
-                new ConsolePrinter(),
-                new TimestampMessageDecorator(),
-                new PostfixDecorator()
-        );
+        HashMapMessageRepository repository = new HashMapMessageRepository();
 
-//        null argument
-        service.log(
-                null,
-                DISTINCT,
-                new Message("a")
-        );
+        MessageService service = new OrderedDistinctMessageService(repository);
 
-//        empty argument
-        service.log(
-                ASC,
-                DISTINCT,
-                new Message("")
-        );
+        Message message = new Message("message");
+        service.log(message);
 
-//        ok
+        System.out.println(repository.findByPrimaryKey(message.getId()));
+        // f4125c33-b369-4426-be0f-3ad9021d0d1e: Message{body='message', severity=MINOR}
+
+        System.out.println("\n--------------------\n");
+
         service.log(
-                ASC,
                 DISTINCT,
-                new Message(MAJOR, "ordered distinct"),
+                new Message(MAJOR, "hello"),
+                new Message(MAJOR, "a"),
                 new Message(MAJOR, "b"),
                 new Message(MINOR, "c"),
-                new Message(REGULAR, "a"),
-                new Message(REGULAR, "f"),
-                new Message(REGULAR, "d"),
-                new Message(REGULAR, "e"),
-                new Message(REGULAR, "d"),
-                new Message("r"),
-                new Message(MAJOR, "d")
+                new Message(MAJOR, "a")
         );
+        /*
+            83806246-127f-43e2-8881-84b11ef30960: Message{body='b', severity=MAJOR}
+            c9205aa1-c8b6-45e0-9cbe-2acfcfae6d51: Message{body='hello', severity=MAJOR}
+            a4b50651-c539-4dd1-852e-52100b5030e8: Message{body='a', severity=MAJOR}
+            f4125c33-b369-4426-be0f-3ad9021d0d1e: Message{body='message', severity=MINOR}
+            7aaf1c00-01a6-4dca-a44c-f8bdc607f479: Message{body='c', severity=MINOR}
+         */
 
-//        null argument in message array
-        service.log(
-                DESC,
-                new Message(MAJOR, "ordered"),
-                new Message(MAJOR, "b"),
-                new Message(MINOR, "c"),
-                new Message(REGULAR, "a"),
-                new Message(REGULAR, "d"),
-                new Message(REGULAR, "d"),
-                null,
-                new Message(MAJOR, "d")
-        );
+        repository.findAll().forEach(System.out::println);
 
+        System.out.println("\n--------------------\n");
 
-        Message message = new Message(MINOR, "hello");
-        Message sameMessage = new Message(MINOR, "hello");
-        Message anotherMessage = new Message(MAJOR, "hello!");
-
-        System.out.println(message);
-        System.out.println(message.equals(anotherMessage));
-        System.out.println(message.equals(sameMessage));
-        System.out.println(message.hashCode());
-        System.out.println(anotherMessage.hashCode());
-
-        HashSet<Message> hashSet = new HashSet<>();
-        hashSet.add(message);
-        hashSet.add(sameMessage);
-        hashSet.add(anotherMessage);
-        System.out.println(hashSet.size());
+        repository.findBySeverity(MAJOR).forEach(System.out::println);
+        /*
+            83806246-127f-43e2-8881-84b11ef30960: Message{body='b', severity=MAJOR}
+            c9205aa1-c8b6-45e0-9cbe-2acfcfae6d51: Message{body='hello', severity=MAJOR}
+            a4b50651-c539-4dd1-852e-52100b5030e8: Message{body='a', severity=MAJOR}
+         */
     }
 }
