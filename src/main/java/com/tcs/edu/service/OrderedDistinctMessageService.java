@@ -36,23 +36,28 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
 
     @Override
     public void log(Message message, Message... messages) {
-        if (!super.isArgsValid(messages) || !super.isArgsValid(message)) throw new IllegalArgumentException();
 
-//        if (message != null) printMessage(message);
-//        Arrays.stream(filterMessagesFromNull(messages)).forEach(this::printMessage);
+        try {
+            super.isArgsValid(messages);
+            super.isArgsValid(message);
+        } catch (IllegalArgumentException e) {
+            throw new LogException("Invalid arguments", e);
+        }
+
         printMessage(message);
         Arrays.stream(messages).forEach(this::printMessage);
     }
 
     @Override
     public void log(MessageOrder order, Message message, Message... messages) {
-        if (!super.isArgsValid(messages) || !super.isArgsValid(order, message))
-            throw new IllegalArgumentException();
 
-//        if (message != null) printMessage(message);
-//        Message[] nonNullMessages = filterMessagesFromNull(messages);
-//        sortMessages(order, nonNullMessages);
-//        Arrays.stream(nonNullMessages).forEach(this::printMessage);
+        try {
+            super.isArgsValid(messages);
+            super.isArgsValid(order, message);
+        } catch (IllegalArgumentException e) {
+            throw new LogException("Invalid arguments", e);
+        }
+
         printMessage(message);
         sortMessages(order, messages);
         Arrays.stream(messages).forEach(this::printMessage);
@@ -60,16 +65,13 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
 
     @Override
     public void log(MessageOrder order, Doubling doubling, Message message, Message... messages) {
-        if (!super.isArgsValid(order, doubling, message) || !super.isArgsValid(messages))
-            throw new IllegalArgumentException();
 
-//        if (message != null) printMessage(message);
-//        Message[] nonNullMessages = filterMessagesFromNull(messages);
-//        sortMessages(order, nonNullMessages);
-//        switch (doubling) {
-//            case DISTINCT -> Arrays.stream(distinct(nonNullMessages)).forEach(this::printMessage);
-//            case DOUBLES -> Arrays.stream(nonNullMessages).forEach(this::printMessage);
-//        }
+        try {
+            super.isArgsValid(messages);
+            super.isArgsValid(order, doubling, message);
+        } catch (IllegalArgumentException e) {
+            throw new LogException("Invalid arguments", e);
+        }
 
         printMessage(message);
         sortMessages(order, messages);
