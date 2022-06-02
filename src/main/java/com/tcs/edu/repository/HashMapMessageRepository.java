@@ -3,7 +3,6 @@ package com.tcs.edu.repository;
 import com.tcs.edu.domain.Message;
 import com.tcs.edu.service.Severity;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
@@ -33,14 +32,6 @@ public class HashMapMessageRepository implements MessageRepository {
 
     @Override
     public Collection<Message> findBySeverity(Severity by) {
-//        ArrayList<Message> result = new ArrayList<>();
-//        for (Message message : messages.values()) {
-//            if (message.getSeverity() == by) {
-//                result.add(message);
-//            }
-//        }
-//        return result;
-
         return messages.values().stream()
                 .filter(m -> m.getSeverity() == by)
                 .collect(toList());
