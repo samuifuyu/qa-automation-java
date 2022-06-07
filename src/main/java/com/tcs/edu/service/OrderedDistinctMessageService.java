@@ -46,7 +46,6 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
 
     @Override
     public void log(MessageOrder order, Message message, Message... messages) {
-
         try {
             super.isArgsValid(order);
         } catch (IllegalArgumentException e) {
@@ -70,7 +69,6 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
 
     @Override
     public void log(MessageOrder order, Doubling doubling, Message message, Message... messages) {
-
         try {
             super.isArgsValid(order, doubling);
         } catch (IllegalArgumentException e) {

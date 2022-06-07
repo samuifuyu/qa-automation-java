@@ -54,7 +54,7 @@ public class Message implements Comparable<Message> {
 
     @Override
     public int compareTo(@NotNull Message o) {
-        return body.compareTo(o.getBody());
+        return body.compareTo(o.getBody()) != 0? body.compareTo(o.getBody()) : severity.compareTo(o.getSeverity());
     }
 
     @Override
